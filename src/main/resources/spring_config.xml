@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="fz" class="come.xdkj.FuZaDemo">
+        <!--注入数组-->
+        <property name="ids">
+            <array>
+                <value>41</value>
+                <value>42</value>
+                <value>43</value>
+            </array>
+        </property>
+        <!--注入list-->
+        <property name="list">
+            <list>
+                <value>spring</value>
+                <value>mybatis</value>
+                <value>spring mvc</value>
+            </list>
+        </property>
+        <!--注入map集合-->
+        <property name="maps">
+            <map>
+                <entry key="11" value="aa"></entry>
+                <entry key="22" value="bb"></entry>
+                <entry key="33" value="cc"></entry>
+            </map>
+        </property>
+        <!--注入properties-->
+        <property name="prop">
+            <props>
+                <prop key="driver">com.mysql.jdbc.Driver</prop>
+                <prop key="user">root</prop>
+                <prop key="password">123</prop>
+            </props>
+        </property>
+    </bean>
+    <!--等价于 Person person1=new Person();-->
+    <!--1.通过构造方法创建对象 init-method 初始化   destroy-method 销毁
+    lazy-init 默认为false true代表所有对象创建完毕然后再init-method-->
+    <bean id="person1" class="come.xdkj.Person" init-method="init" destroy-method="destory" lazy-init="true"></bean>
+    <!--2.通过对象工厂 普通方法创建对象-->
+    <bean id="factory" class="come.xdkj.PersonFactory"/>
+    <bean id="person3" factory-bean="factory" factory-method="createPerson"></bean>
+    <!--3.通过对象工厂 静态方法创建对象-->
+    <bean id="person2" class="come.xdkj.PersonFactory" factory-method="createPerson2"></bean>
+    <!--依赖注入（DI Dependency Injection):给spring容器创建的对象注入所依赖的属性-->
+    <!--1.通过set方法注入-->
+    <bean id="person4" class="come.xdkj.Person">
+        <property name="pid" value="1001"/>
+        <property name="pname" value="张三"/>
+        <property name="page" value="19"/>
+    </bean>
+    <!--2.通过构造方法注入-->
+    <bean id="person5" class="come.xdkj.Person">
+        <!--通过参数下标-->
+        <!--<constructor-arg index="0" value="1002"/>
+        <constructor-arg index="1" value="李四"/>
+        <constructor-arg index="2" value="66"/>-->
+        <!--通过参数类型 一般和下标结合使用-->
+        <constructor-arg type="java.lang.Integer" value="1004"/>
+        <constructor-arg type="java.lang.String" value="老六"/>
+        <constructor-arg type="java.lang.Integer" value="34"/>
+        <!--通过参数名称-->
+        <!--<constructor-arg name="pid" value="1003"/>
+        <constructor-arg name="pname" value="王五"/>
+        <constructor-arg name="page" value="55"/>-->
+    </bean>
+    <!--3.通过命名空间注入-->
+    <bean id="person6" class="come.xdkj.Person" p:pid="1005" p:pname="小七" p:page="22">
+    </bean>
+    <!--4.通过SpEL注入-->
+    <bean id="car1" class="come.xdkj.Car">
+        <property name="color" value="黑色"/>
+        <property name="cname" value="宝骏"/>
+    </bean>
+    <bean id="person7" class="come.xdkj.Person">
+        <property name="pid" value="#{person4.pid}"/>
+        <property name="pname" value="#{person5.pname}"/>
+        <property name="page" value="#{person6.page}"/>
+        <property name="birthday" value="#{new java.util.Date()}"/>
+        <!--注意：用SpEL注入引用数据类型时 要用value 不能用ref-->
+        <property name="car" value="#{car1}"/>
+    </bean>
+
+
+</beans>
